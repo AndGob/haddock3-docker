@@ -27,8 +27,11 @@ RUN conda create -y -n myenv python=3.9 && \
     conda init bash && \
     echo "conda activate myenv" >> ~/.bashrc
 
-# Install haddock3 in the conda environment
+ # Install haddock3 in the conda environment
 RUN /opt/conda/envs/myenv/bin/pip install haddock3
+
+# Install pdb-tools versione 2.5.0 in the conda enviroment
+RUN /opt/conda/envs/myenv/bin/pip install pdb-tools==2.5.0
 
 # Set environment variables
 ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
@@ -46,6 +49,12 @@ RUN apt-get -y install csh
 # Copy the CNS and haddock folders into the container
 COPY ../CNS/cns_solve_1.3_all.tar.gz /opt/
 COPY ../haddock3 /opt/haddock3
+# Copy haddock-restraints folder in the container and 
+COPY ../haddock-restraints /opt/haddock-restraints
+
+# Extract the haddock-restraints tarball
+RUN tar -xvzf /opt/haddock-restraints/haddock-restraints-v0.8.1-x86_64-unknown-linux-gnu.tar.gz -C /usr/local/bin/ && \
+    chmod +x /usr/local/bin/haddock-restraints
 
 # extract CNS files and proceed with the installation
 RUN tar -xvzf /opt/cns_solve_1.3_all.tar.gz -C /opt/
